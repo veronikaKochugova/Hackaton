@@ -1,4 +1,3 @@
-/build
 **build/
 **bin/
 **settings.gradle
