@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editIP;
     Button btnSendMessage;
     Button btnChangeIP;
+    Button btnConnect;
     TextView textMsgFromServer;
 
     private Socket socket = null;
@@ -38,15 +39,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnSendMessage = findViewById(R.id.btnSendMessage);
         btnChangeIP = findViewById(R.id.btnChangeServerIP);
+        btnConnect = findViewById(R.id.btnConnectToServer);
+
+        btnSendMessage.setEnabled(false);
 
         textMsgFromServer = findViewById(R.id.txtMessage);
 
-        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+        btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                message = editMessage.getText().toString();
-                editMessage.setText("");
-
                 if (socket == null) {
                     new Thread(new Runnable() {
                         @Override
@@ -55,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).start();
                 }
+            }
+        });
+
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                message = editMessage.getText().toString();
+                editMessage.setText("");
 
                 try {
                     sentData(message.getBytes());
@@ -80,8 +89,15 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             InetAddress serverAdr = InetAddress.getByName(SERVER_IP);
-            Log.d("Dasha", serverAdr.toString());
             socket = new Socket(serverAdr, SERVER_PORT);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnSendMessage.setEnabled(true);
+                }
+            });
+
         } catch (UnknownHostException e) {
             Log.d("Dasha", e.getMessage());
         } catch (IOException e) {
@@ -93,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
         if (socket != null && !socket.isClosed()) {
             try {
                 socket.close();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnSendMessage.setEnabled(false);
+                    }
+                });
+
             } catch (Exception e) {
                 textMsgFromServer.setText("Unable close socket");
             }
