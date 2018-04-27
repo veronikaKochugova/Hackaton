@@ -1,0 +1,7 @@
+TestServerSockets/out/
+TestServerSockets/.idea/
+server/.idea/
+client/.idea/
+*/.idea/*
+*/.gradle/*
+*/out/*
