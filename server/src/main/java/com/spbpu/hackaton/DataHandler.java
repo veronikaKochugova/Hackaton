@@ -5,8 +5,6 @@ import java.util.Arrays;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 
 public class DataHandler {
     private SparkConf sparkConf;
@@ -35,6 +33,6 @@ public class DataHandler {
         long numAs = words.filter(s -> s.contains("a")).count();
         long numCs = words.filter(s -> s.contains("c")).count();
 
-        return new String("words with a: " + numAs + ", words with c: " + numCs);
+        return "words with a: " + numAs + ", words with c: " + numCs + "\n";
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class Controller {
+    DataHandler dataHandler = new DataHandler();
 
 //    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
 //    public ResponseEntity<?> get(final @PathVariable String name,
@@ -27,7 +28,6 @@ public class Controller {
 
     @RequestMapping(value = "/testGet", method = RequestMethod.GET)
     public ResponseEntity<?> get() {
-        DataHandler dataHandler = new DataHandler();
         return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
     }
 
