@@ -8,17 +8,14 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <FrameLayout
+    <com.anychart.anychart.AnyChartView
+        android:id="@+id/chartView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorBkGr"
-        android:layout_weight="1">
-
-
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
     <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/btmNavView"
         style="@style/BottomNavigationViewStyle"
         app:menu="@menu/menu_navigation" />
 
