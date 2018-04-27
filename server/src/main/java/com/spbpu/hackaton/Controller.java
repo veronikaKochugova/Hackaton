@@ -35,7 +35,8 @@ public class Controller {
 
     @RequestMapping(value = "/testGet", method = RequestMethod.GET)
     public ResponseEntity<?> get() {
-        return new ResponseEntity<>("Hi! I'm \"GET\"\n", HttpStatus.OK);
+        PrintRDD printRDD = new PrintRDD();
+        return new ResponseEntity<>(printRDD.get(), HttpStatus.OK);
     }
 
 //    @RequestMapping(method = RequestMethod.POST)
