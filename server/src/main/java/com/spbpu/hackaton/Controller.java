@@ -1,15 +1,8 @@
 package com.spbpu.hackaton;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Set;
 
 
 @RestController
@@ -35,8 +28,8 @@ public class Controller {
 
     @RequestMapping(value = "/testGet", method = RequestMethod.GET)
     public ResponseEntity<?> get() {
-        PrintRDD printRDD = new PrintRDD();
-        return new ResponseEntity<>(printRDD.get(), HttpStatus.OK);
+        DataHandler dataHandler = new DataHandler();
+        return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
     }
 
 //    @RequestMapping(method = RequestMethod.POST)
