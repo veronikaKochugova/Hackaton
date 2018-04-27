@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/pieChartItem"
+        android:icon="@drawable/ic_pie_chart_black_24dp"
+        android:title="Pie chart" />
+
+    <item
+        android:id="@+id/barChartItem"
+        android:icon="@drawable/ic_bar_chart_black_24dp"
+        android:title="Bar chart" />
+
+    <item
+        android:id="@+id/lineChartItem"
+        android:icon="@drawable/ic_line_chart_black_24dp"
+        android:title="Line chart" />
+
+</menu>
