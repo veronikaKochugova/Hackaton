@@ -1,16 +1,16 @@
 package com.spbpu.hackaton;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import static org.apache.spark.sql.functions.col;
+
 public class DataHandler {
     private SparkSession sparkSession;
+    Dataset<Row> csv;
 
     public DataHandler() {
         sparkSession = SparkSession.builder()
@@ -19,6 +19,10 @@ public class DataHandler {
                 .config("spark.driver.memory", "471859200")
                 .config("spark.testing.memory", "2147480000")
                 .getOrCreate();
+        csv = sparkSession.read()
+                .format("csv")
+                .option("header","true")
+                .load("resources/FAO.csv");
     }
 
 
@@ -61,11 +65,6 @@ public class DataHandler {
     }
 
     public Set<?> getCountries() {
-        Dataset<Row> csv = sparkSession.read()
-                .format("csv")
-                .option("header","true")
-                .load("resources/FAO.csv");
-
         csv.createOrReplaceTempView("csv");
 
         Dataset<Row> sqlDF = sparkSession
@@ -74,10 +73,26 @@ public class DataHandler {
     }
 
     public List<String> getYears(String country) {
-        List list = new ArrayList();
-        list.add("2035");
-        list.add("1861");
-        return list;
+        csv = csv.filter(col("Area").like(country));
+        csv.createOrReplaceTempView("csv");
+
+        List<String> years = new ArrayList<>();
+
+        for (Integer year = 1961; year != 2014; year++){
+            Dataset<Row> yearDF = sparkSession
+                    .sql("SELECT sum(CAST(Y" + year.toString() +
+                            " AS DOUBLE)) FROM csv");
+            try {
+                yearDF.first().getDouble(0);
+            } catch (java.lang.NullPointerException j) {
+                // data for year is null - skip
+                continue;
+            }
+            years.add(year.toString());
+        }
+
+        Collections.sort(years);
+        return years;
     }
 
     public List<?> getDataForPie(String country, String year) {
