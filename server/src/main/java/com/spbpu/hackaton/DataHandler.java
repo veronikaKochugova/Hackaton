@@ -1,41 +1,40 @@
 package com.spbpu.hackaton;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 
 public class DataHandler {
-    private SparkConf sparkConf;
-    private JavaSparkContext sc;
+    private SparkSession sparkSession;
 
     public DataHandler() {
-        // configure spark
-        sparkConf = new SparkConf().setMaster("local")
-                .setAppName("Spark")
-                .set("spark.testing.memory", "2147480000");
-        // start a spark context
-        sc = new JavaSparkContext(sparkConf);
+        sparkSession = SparkSession.builder()
+                .master("local")
+                .appName("Spark Session Example")
+                .config("spark.driver.memory", "471859200")
+                .config("spark.testing.memory", "2147480000")
+                .getOrCreate();
+    }
+
+
+    public static HashSet<String> parseAreas(List<Row> stringList){
+        String pattern = "[\\[\\]]";
+        HashSet<String> areas = new HashSet<>();
+
+        for (Row src : stringList) {
+            String[] parts = src.toString().split(pattern);
+            areas.add(parts[1]);
+        }
+        return areas;
     }
 
     public String get() {
-        // provide path to input text file
-        String path = "resources/sample.txt";
 
-        // read text file to RDD
-        JavaRDD<String> lines = sc.textFile(path);
-
-        // flatMap each line to words in the line
-        JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(s.split(" ")).iterator());
-
-        //count words which contain letters A and C
-        long numAs = words.filter(s -> s.contains("a")).count();
-        long numCs = words.filter(s -> s.contains("c")).count();
-
-        return "words with a: " + numAs + ", words with c: " + numCs + "\n";
+        return "";
     }
 
     public String getDataForMap(String year){
@@ -49,9 +48,16 @@ public class DataHandler {
     }
 
     public Set<?> getCountries() {
-        Set set = new HashSet();
-        set.add("aaa");
-        set.add("bbb");
-        return set;
+        Dataset<Row> csv = sparkSession.read()
+                .format("csv")
+                .option("header","true")
+                .load("resources/FAO.csv");
+
+        csv.createOrReplaceTempView("csv");
+
+        Dataset<Row> sqlDF = sparkSession
+                .sql("SELECT DISTINCT Area FROM csv");
+
+        return parseAreas(sqlDF.collectAsList());
     }
 }

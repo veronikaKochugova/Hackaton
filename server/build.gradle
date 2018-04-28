@@ -32,6 +32,7 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
     compile 'org.apache.spark:spark-core_2.11:2.3.0'
+    compile 'org.apache.spark:spark-sql_2.11:2.3.0'
 }
 //dependencies {
 //    testImplementation 'org.apache.spark:spark-core_2.11:2.1.0','junit:junit:4.12'
