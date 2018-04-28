@@ -1,5 +1,6 @@
 package com.spbpu.hackaton;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,18 @@ public class DataHandler {
 
     public String getDataForChart(String country){
 
+        Dataset<Row> csv = sparkSession.read()
+                .format("csv")
+                .option("header","true")
+                .load("resources/FAO.csv");
+
+        csv.createOrReplaceTempView("csv");
+
+        Dataset<Row> sqlDF = sparkSession
+                .sql("SELECT DISTINCT Area FROM csv");
+
+        //sqlDF.groupBy().sum("1961");
+
         return country;
     }
 
@@ -57,7 +70,20 @@ public class DataHandler {
 
         Dataset<Row> sqlDF = sparkSession
                 .sql("SELECT DISTINCT Area FROM csv");
-
         return parseAreas(sqlDF.collectAsList());
+    }
+
+    public List<String> getYears(String country) {
+        List list = new ArrayList();
+        list.add("2035");
+        list.add("1861");
+        return list;
+    }
+
+    public List<?> getDataForPie(String country, String year) {
+        List list = new ArrayList();
+        list.add("product + value");
+        list.add("other product + value");
+        return list;
     }
 }
