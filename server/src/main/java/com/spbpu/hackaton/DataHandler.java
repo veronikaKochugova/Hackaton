@@ -1,6 +1,8 @@
 package com.spbpu.hackaton;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -44,5 +46,12 @@ public class DataHandler {
     public String getDataForChart(String country){
 
         return country;
+    }
+
+    public Set<?> getCountries() {
+        Set set = new HashSet();
+        set.add("aaa");
+        set.add("bbb");
+        return set;
     }
 }

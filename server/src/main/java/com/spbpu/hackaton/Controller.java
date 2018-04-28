@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 public class Controller {
     DataHandler dataHandler = new DataHandler();
@@ -40,6 +43,16 @@ public class Controller {
     public ResponseEntity<?> getPieChartData(final @RequestParam(value = "country") String country) {
         return new ResponseEntity<>(dataHandler.getDataForChart(country), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/allCountries", method = RequestMethod.GET)
+    public Set<?> getSet() {
+        return dataHandler.getCountries();
+    }
+
+//    @RequestMapping(value = "/allCountries", method = RequestMethod.GET)
+//    public ResponseEntity<?> getAllCountries() {
+//        return new ResponseEntity<>(dataHandler.getAllCountries(), HttpStatus.OK);
+//    }
 
 //    @RequestMapping(method = RequestMethod.POST)
 //    public ResponseEntity<?> add(final @RequestParam("xsdScheme") MultipartFile uploadFile,
