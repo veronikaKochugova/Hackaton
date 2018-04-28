@@ -33,7 +33,7 @@ public class Controller {
 
     @RequestMapping(value = "/map", method = RequestMethod.GET)
     public ResponseEntity<?> getMapData(final @RequestParam(value = "year") String year) {
-        return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
+        return new ResponseEntity<>(year + " " + dataHandler.get(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/pie", method = RequestMethod.GET)
