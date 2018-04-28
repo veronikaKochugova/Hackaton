@@ -73,8 +73,8 @@ public class DataHandler {
     }
 
     public List<String> getYears(String country) {
-        csv = csv.filter(col("Area").like(country));
-        csv.createOrReplaceTempView("csv");
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country));
+        sqlDF.createOrReplaceTempView("csv");
 
         List<String> years = new ArrayList<>();
 
