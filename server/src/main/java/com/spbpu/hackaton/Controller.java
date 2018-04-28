@@ -52,7 +52,7 @@ public class Controller {
     }
 
     @RequestMapping(value = "/allCountries", method = RequestMethod.GET)
-    public Set<?> getSet() {
+    public List<?> getSet() {
         return dataHandler.getCountries();
     }
 

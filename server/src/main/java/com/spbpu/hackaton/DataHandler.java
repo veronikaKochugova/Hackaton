@@ -26,14 +26,16 @@ public class DataHandler {
     }
 
 
-    public static HashSet<String> parseAreas(List<Row> stringList){
+    public static List<String> parseAreas(List<Row> stringList){
         String pattern = "[\\[\\]]";
-        HashSet<String> areas = new HashSet<>();
+        List<String> areas = new ArrayList<>();
 
         for (Row src : stringList) {
             String[] parts = src.toString().split(pattern);
             areas.add(parts[1]);
         }
+        Collections.sort(areas);
+
         return areas;
     }
 
@@ -64,7 +66,7 @@ public class DataHandler {
         return country;
     }
 
-    public Set<?> getCountries() {
+    public List<?> getCountries() {
         csv.createOrReplaceTempView("csv");
 
         Dataset<Row> sqlDF = sparkSession
