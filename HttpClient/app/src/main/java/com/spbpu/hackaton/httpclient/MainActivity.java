@@ -3,10 +3,12 @@ package com.spbpu.hackaton.httpclient;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,12 +19,21 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    static private final String URL_GET = "http://192.168.3.234:8090/testGet";
+    static private final String URL_GET_ALL = "allCountries";
+    //static private final String URL = "http://192.168.3.234:8090/";
+    static private final String URL = "http://10.20.0.95:8090/";
 
     TextView txtMessage;
     Button btnGet;
+    String[] allCountries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnGet = findViewById(R.id.btnGet);
 
         btnGet.setOnClickListener(this);
+
     }
 
     @Override
@@ -66,11 +78,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnGet:
                 StringRequest getRequest = new StringRequest(
                         Request.Method.GET,
-                        URL_GET,
+                        URL + URL_GET_ALL,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                txtMessage.setText(response);
+                                txtMessage.setText("OK : ");
+                                String tmp = response;
+                                allCountries = tmp.split(",");
                             }
                         },
                         new Response.ErrorListener() {
@@ -79,9 +93,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 txtMessage.setText("ERROR: " + error.toString());
                             }
                         });
-                RequestQueue requestQueue = Volley.newRequestQueue(this);
-                requestQueue.add(getRequest);
 
+                RequestQueue requestQueue = Volley.newRequestQueue(this);
+                getRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        10000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+                requestQueue.add(getRequest);
                 break;
         }
 
