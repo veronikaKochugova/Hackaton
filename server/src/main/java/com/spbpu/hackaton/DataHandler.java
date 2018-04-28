@@ -38,6 +38,20 @@ public class DataHandler {
 
         return areas;
     }
+    public static List<String> parseDataForChart(String stringList){
+        String pattern = "[\\[,+\\]]";
+        List<String> areas = new ArrayList<>();
+        String[] parts = stringList.split(pattern);
+
+        int i=1;
+        for (Integer year = 1961; year != 2014; year++){
+            if (!parts[i].equals("null")){
+                areas.add(year.toString());
+            }
+            i++;
+        }
+        return areas;
+    }
 
     public String get() {
 
@@ -50,11 +64,6 @@ public class DataHandler {
     }
 
     public String getDataForChart(String country){
-
-        Dataset<Row> csv = sparkSession.read()
-                .format("csv")
-                .option("header","true")
-                .load("resources/FAO.csv");
 
         csv.createOrReplaceTempView("csv");
 
@@ -78,23 +87,16 @@ public class DataHandler {
         Dataset<Row> sqlDF = csv.filter(col("Area").like(country));
         sqlDF.createOrReplaceTempView("csv");
 
-        List<String> years = new ArrayList<>();
+        String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
 
-        for (Integer year = 1961; year != 2014; year++){
-            Dataset<Row> yearDF = sparkSession
-                    .sql("SELECT sum(CAST(Y" + year.toString() +
-                            " AS DOUBLE)) FROM csv");
-            try {
-                yearDF.first().getDouble(0);
-            } catch (java.lang.NullPointerException j) {
-                // data for year is null - skip
-                continue;
-            }
-            years.add(year.toString());
+        for (Integer year = 1962; year != 2014; year++){
+            stringYear += ", sum(CAST(Y" + year.toString() + " AS DOUBLE))";
         }
 
-        Collections.sort(years);
-        return years;
+        Dataset<Row> yearDF = sparkSession
+                .sql("SELECT " + stringYear + " FROM csv");
+
+        return parseDataForChart(yearDF.collectAsList().get(0).toString());
     }
 
     public List<?> getDataForPie(String country, String year) {
