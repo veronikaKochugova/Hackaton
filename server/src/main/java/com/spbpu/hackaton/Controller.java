@@ -31,8 +31,13 @@ public class Controller {
         return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getMapData() {
+    @RequestMapping(value = "/map", method = RequestMethod.GET)
+    public ResponseEntity<?> getMapData(final @RequestParam(value = "year") String year) {
+        return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/pie", method = RequestMethod.GET)
+    public ResponseEntity<?> getPieChartData(final @RequestParam(value = "country") String country) {
         return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
     }
 
