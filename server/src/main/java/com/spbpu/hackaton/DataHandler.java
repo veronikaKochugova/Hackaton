@@ -35,4 +35,14 @@ public class DataHandler {
 
         return "words with a: " + numAs + ", words with c: " + numCs + "\n";
     }
+
+    public String getDataForMap(String year){
+
+        return year;
+    }
+
+    public String getDataForChart(String country){
+
+        return country;
+    }
 }
