@@ -31,6 +31,11 @@ public class Controller {
         return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> getMapData() {
+        return new ResponseEntity<>(dataHandler.get(), HttpStatus.OK);
+    }
+
 //    @RequestMapping(method = RequestMethod.POST)
 //    public ResponseEntity<?> add(final @RequestParam("xsdScheme") MultipartFile uploadFile,
 //                                 final @RequestParam("name") String name) {
