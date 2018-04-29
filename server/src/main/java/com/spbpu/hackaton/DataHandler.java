@@ -32,7 +32,7 @@ public class DataHandler {
 
         for (Row src : stringList) {
             String[] parts = src.toString().split(pattern);
-            areas.add(parts[1]);
+            areas.add(parts[1].replace(" ", "_"));
         }
         Collections.sort(areas);
 
