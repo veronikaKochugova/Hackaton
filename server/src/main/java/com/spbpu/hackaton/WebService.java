@@ -9,7 +9,5 @@ public class WebService {
     }
     public static void main(String[] args) {
         SpringApplication.run(WebService.class, args);
-        //DataHandler dataHandler = new DataHandler();
-        //System.out.println(dataHandler.getDataForChart("Russia"));
     }
 }

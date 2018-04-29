@@ -13,9 +13,9 @@ import java.util.Set;
 public class Controller {
     DataHandler dataHandler = new DataHandler();
 
-    @RequestMapping(value = "/map", method = RequestMethod.GET)
-    public ResponseEntity<?> getMapData(final @RequestParam(value = "year") String year) {
-        return new ResponseEntity<>(dataHandler.getDataForMap(year), HttpStatus.OK);
+    @RequestMapping(value = "/graph", method = RequestMethod.GET)
+    public List<String> getGraphData(final @RequestParam(value = "country") String country) {
+        return dataHandler.getDataForGraph(country);
     }
 
     @RequestMapping(value = "/pie", method = RequestMethod.GET)

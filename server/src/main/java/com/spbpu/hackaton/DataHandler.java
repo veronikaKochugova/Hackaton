@@ -21,12 +21,12 @@ public class DataHandler {
                 .getOrCreate();
         csv = sparkSession.read()
                 .format("csv")
-                .option("header","true")
+                .option("header", "true")
                 .load("resources/FAO.csv");
     }
 
 
-    public static List<String> parseAreas(List<Row> stringList){
+    public static List<String> parseAreas(List<Row> stringList) {
         String pattern = "[\\[\\]]";
         List<String> areas = new ArrayList<>();
 
@@ -38,14 +38,15 @@ public class DataHandler {
 
         return areas;
     }
-    public static List<String> parseDataForChart(String stringList){
+
+    public static List<String> parseDataForChart(String stringList) {
         String pattern = "[\\[,+\\]]";
         List<String> areas = new ArrayList<>();
         String[] parts = stringList.split(pattern);
 
-        int i=1;
-        for (Integer year = 1961; year != 2014; year++){
-            if (!parts[i].equals("null")){
+        int i = 1;
+        for (Integer year = 1961; year != 2014; year++) {
+            if (!parts[i].equals("null")) {
                 areas.add(year.toString());
             }
             i++;
@@ -58,12 +59,12 @@ public class DataHandler {
         return "";
     }
 
-    public String getDataForMap(String year){
+    public String getDataForMap(String year) {
 
         return year;
     }
 
-    public String getDataForChart(String country){
+    public String getDataForChart(String country) {
 
         csv.createOrReplaceTempView("csv");
 
@@ -89,7 +90,7 @@ public class DataHandler {
 
         String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
 
-        for (Integer year = 1962; year != 2014; year++){
+        for (Integer year = 1962; year != 2014; year++) {
             stringYear += ", sum(CAST(Y" + year.toString() + " AS DOUBLE))";
         }
 
@@ -99,11 +100,17 @@ public class DataHandler {
         return parseDataForChart(yearDF.collectAsList().get(0).toString());
     }
 
-    public Map<?,?> getDataForPie(String country, String year) {
+    public Map<?, ?> getDataForPie(String country, String year) {
         Map map = new HashMap();
-        map.put("product","100");
-        map.put("product1","250");
-        map.put("product2","50");
+        map.put("product", "100");
+        map.put("product1", "250");
+        map.put("product2", "50");
         return map;
+    }
+
+    public List<String> getDataForGraph(String country) {
+        List list = new ArrayList();
+        for (Integer i = 0; i < 30; ++i) list.add(String.valueOf(i));
+        return list;
     }
 }
