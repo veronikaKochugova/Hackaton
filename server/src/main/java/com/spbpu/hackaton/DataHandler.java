@@ -54,6 +54,25 @@ public class DataHandler {
         return areas;
     }
 
+    public static Map<String, Double> parseDataForChart(List<Row> sorted5, List<Row> sumRest){
+        Map<String, Double> map = new TreeMap<>();
+
+        for (Row src : sorted5){
+            String str = src.toString();
+            String sum = str.substring(str.lastIndexOf(",") + 1, str.lastIndexOf("]")-1);
+            String item = str.substring(1, str.lastIndexOf(","));
+            map.put(item, Double.parseDouble(sum));
+        }
+        String rest = sumRest.toString();
+        map.put("Others",Double.parseDouble(rest.substring(2,rest.length()-2)));
+
+        for (Map.Entry<String, Double> entry : map.entrySet()){
+            System.out.println(entry.getKey() + " => " + entry.getValue());
+        }
+
+        return map;
+    }
+
     public String get() {
 
         return "";
@@ -101,11 +120,20 @@ public class DataHandler {
     }
 
     public Map<?, ?> getDataForPie(String country, String year) {
-        Map map = new HashMap();
-        map.put("product", "100");
-        map.put("product1", "250");
-        map.put("product2", "50");
-        return map;
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country));
+        sqlDF.createOrReplaceTempView("csv");
+
+        Dataset<Row> sql2 = sparkSession.sql("SELECT Item, sum(CAST(Y" + year +
+                " AS DOUBLE)) AS SumY FROM csv" +
+                " GROUP BY Item");
+        Dataset<Row> sorted5 = sql2.select("Item","SumY")
+                .sort(col("SumY").desc()).limit(10);
+
+        Dataset<Row> sumRest = sql2.except(sorted5);
+        sumRest.createOrReplaceTempView("sumRest");
+        sumRest = sparkSession.sql("SELECT sum(SumY) FROM sumRest");
+
+        return parseDataForChart(sorted5.collectAsList(), sumRest.collectAsList());
     }
 
     public List<String> getDataForGraph(String country) {
