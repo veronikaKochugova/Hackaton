@@ -99,10 +99,11 @@ public class DataHandler {
         return parseDataForChart(yearDF.collectAsList().get(0).toString());
     }
 
-    public List<?> getDataForPie(String country, String year) {
-        List list = new ArrayList();
-        list.add("product + value");
-        list.add("other product + value");
-        return list;
+    public Map<?,?> getDataForPie(String country, String year) {
+        Map map = new HashMap();
+        map.put("product","100");
+        map.put("product1","250");
+        map.put("product2","50");
+        return map;
     }
 }
