@@ -64,30 +64,26 @@ public class DataHandler {
             String item = str.substring(1, str.lastIndexOf(","));
             map.put(item, sum);
         }
-
         return map;
     }
 
+    public static List<String> parseDataForGraph(String stringList) {
+        String pattern = "[\\[,+\\]]";
+        List<String> areas = new ArrayList<>();
+        String[] parts = stringList.split(pattern);
+
+        for (int i = 1; i != parts.length; i++) {
+            if (parts[i].equals("null")) {
+                areas.add("0.0");
+            } else {
+                areas.add(parts[i]);
+            }
+        }
+        return areas;
+    }
+
     public String get() {
-
         return "";
-    }
-
-    public String getDataForMap(String year) {
-
-        return year;
-    }
-
-    public String getDataForChart(String country) {
-
-        csv.createOrReplaceTempView("csv");
-
-        Dataset<Row> sqlDF = sparkSession
-                .sql("SELECT DISTINCT Area FROM csv");
-
-        //sqlDF.groupBy().sum("1961");
-
-        return country;
     }
 
     public List<?> getCountries() {
@@ -99,31 +95,20 @@ public class DataHandler {
     }
 
     public List<String> getYears(String country) {
-<<<<<<< HEAD
         Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_", " ")));
-=======
-        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
->>>>>>> 0874fab9a991468a7a5eb53de26f525b0997f4a9
         sqlDF.createOrReplaceTempView("csv");
 
         String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
-
         for (Integer year = 1962; year != 2014; year++) {
             stringYear += ", sum(CAST(Y" + year.toString() + " AS DOUBLE))";
         }
-
-        Dataset<Row> yearDF = sparkSession
-                .sql("SELECT " + stringYear + " FROM csv");
+        Dataset<Row> yearDF = sparkSession.sql("SELECT " + stringYear + " FROM csv");
 
         return parseDataForChart(yearDF.collectAsList().get(0).toString());
     }
 
     public Map<?, ?> getDataForPie(String country, String year) {
-<<<<<<< HEAD
         Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_", " ")));
-=======
-        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
->>>>>>> 0874fab9a991468a7a5eb53de26f525b0997f4a9
         sqlDF.createOrReplaceTempView("csv");
 
         Dataset<Row> sorted5 = sparkSession.sql("SELECT Item, sum(CAST(Y" + year +
@@ -131,16 +116,19 @@ public class DataHandler {
                 " GROUP BY Item").select("Item","SumY")
                 .sort(col("SumY").desc()).limit(5);
 
-        //Dataset<Row> sumRest = sql2.except(sorted5);
-        //sumRest.createOrReplaceTempView("sumRest");
-        //sumRest = sparkSession.sql("SELECT sum(SumY) FROM sumRest");
-
         return parseDataForChart(sorted5.collectAsList());
     }
 
     public List<String> getDataForGraph(String country) {
-        List list = new ArrayList();
-        for (Integer i = 0; i < 30; ++i) list.add(String.valueOf(i));
-        return list;
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_", " ")));
+        sqlDF.createOrReplaceTempView("csv");
+
+        String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
+        for (Integer year = 1962; year != 2014; year++) {
+            stringYear += ", sum(CAST(Y" + year.toString() + " AS DOUBLE))";
+        }
+        Dataset<Row> yearDF = sparkSession.sql("SELECT " + stringYear + " FROM csv");
+
+        return parseDataForGraph(yearDF.collectAsList().get(0).toString());
     }
 }
