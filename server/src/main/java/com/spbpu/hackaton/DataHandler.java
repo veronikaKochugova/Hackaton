@@ -32,7 +32,7 @@ public class DataHandler {
 
         for (Row src : stringList) {
             String[] parts = src.toString().split(pattern);
-            areas.add(parts[1].replace(" ", "_"));
+            areas.add(parts[1]);
         }
         Collections.sort(areas);
 
@@ -54,20 +54,15 @@ public class DataHandler {
         return areas;
     }
 
-    public static Map<String, Double> parseDataForChart(List<Row> sorted5, List<Row> sumRest){
-        Map<String, Double> map = new TreeMap<>();
+    public static Map<String, String> parseDataForChart(List<Row> sorted5){
+        Map<String, String> map = new TreeMap<>();
 
         for (Row src : sorted5){
             String str = src.toString();
-            String sum = str.substring(str.lastIndexOf(",") + 1, str.lastIndexOf("]")-1);
+            String sum = str.substring(str.lastIndexOf(",") + 1, str.lastIndexOf("]"));
+            if (sum.equals("null")) sum="0.0";
             String item = str.substring(1, str.lastIndexOf(","));
-            map.put(item, Double.parseDouble(sum));
-        }
-        String rest = sumRest.toString();
-        map.put("Others",Double.parseDouble(rest.substring(2,rest.length()-2)));
-
-        for (Map.Entry<String, Double> entry : map.entrySet()){
-            System.out.println(entry.getKey() + " => " + entry.getValue());
+            map.put(item, sum);
         }
 
         return map;
@@ -104,7 +99,11 @@ public class DataHandler {
     }
 
     public List<String> getYears(String country) {
+<<<<<<< HEAD
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_", " ")));
+=======
         Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
+>>>>>>> 0874fab9a991468a7a5eb53de26f525b0997f4a9
         sqlDF.createOrReplaceTempView("csv");
 
         String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
@@ -120,20 +119,23 @@ public class DataHandler {
     }
 
     public Map<?, ?> getDataForPie(String country, String year) {
+<<<<<<< HEAD
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_", " ")));
+=======
         Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
+>>>>>>> 0874fab9a991468a7a5eb53de26f525b0997f4a9
         sqlDF.createOrReplaceTempView("csv");
 
-        Dataset<Row> sql2 = sparkSession.sql("SELECT Item, sum(CAST(Y" + year +
+        Dataset<Row> sorted5 = sparkSession.sql("SELECT Item, sum(CAST(Y" + year +
                 " AS DOUBLE)) AS SumY FROM csv" +
-                " GROUP BY Item");
-        Dataset<Row> sorted5 = sql2.select("Item","SumY")
-                .sort(col("SumY").desc()).limit(10);
+                " GROUP BY Item").select("Item","SumY")
+                .sort(col("SumY").desc()).limit(5);
 
-        Dataset<Row> sumRest = sql2.except(sorted5);
-        sumRest.createOrReplaceTempView("sumRest");
-        sumRest = sparkSession.sql("SELECT sum(SumY) FROM sumRest");
+        //Dataset<Row> sumRest = sql2.except(sorted5);
+        //sumRest.createOrReplaceTempView("sumRest");
+        //sumRest = sparkSession.sql("SELECT sum(SumY) FROM sumRest");
 
-        return parseDataForChart(sorted5.collectAsList(), sumRest.collectAsList());
+        return parseDataForChart(sorted5.collectAsList());
     }
 
     public List<String> getDataForGraph(String country) {
