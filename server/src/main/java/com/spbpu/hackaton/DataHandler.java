@@ -104,7 +104,7 @@ public class DataHandler {
     }
 
     public List<String> getYears(String country) {
-        Dataset<Row> sqlDF = csv.filter(col("Area").like(country));
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
         sqlDF.createOrReplaceTempView("csv");
 
         String stringYear = "sum(CAST(Y1961 AS DOUBLE))";
@@ -120,7 +120,7 @@ public class DataHandler {
     }
 
     public Map<?, ?> getDataForPie(String country, String year) {
-        Dataset<Row> sqlDF = csv.filter(col("Area").like(country));
+        Dataset<Row> sqlDF = csv.filter(col("Area").like(country.replace("_"," ")));
         sqlDF.createOrReplaceTempView("csv");
 
         Dataset<Row> sql2 = sparkSession.sql("SELECT Item, sum(CAST(Y" + year +
